@@ -19,13 +19,15 @@
             </div>
             <div class="mb-3">
                 <label for="creator" class="form-label">Creator</label>
-                <input type="text" class="form-control" id="creator" name="creator" placeholder="Enter Creator" value="{{ $post['creator'] }}"/>
+                <select class="form-select" name="user_id" id="user_id">
+                    <option value="" disabled>Select creator</option>
+                    @foreach($users as $user)
+{{--                        @if($post->id == $user->id) selected @endif--}}
+                        <option value="{{ $user->id }}" {{ $post->id == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                    @endforeach
+                </select>
             </div>
 
-            <div class="mb-3">
-                <label for="created_at" class="form-label">Created At</label>
-                <input type="text" class="form-control" id="created_at" name="created_at" placeholder="Enter created at" value="{{ $post['created_at'] }}"/>
-            </div>
             <button type="submit" class="btn btn-primary">Create Post</button>
         </form>
     </div>

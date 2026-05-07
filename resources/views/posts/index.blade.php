@@ -20,17 +20,17 @@
                 <tr>
                     <td>{{ $post->id }}</td>
                     <td>{{ $post->title }}</td>
-                    <td>{{ $post->creator }}</td>
+                    <td>{{ \App\Models\User::findorfail($post->user_id)?->name }}</td>
                     <td>{{ $post->created_at }}</td>
                     <td>
-                        <a href="{{ route("posts.show", ["post" =>$post['id']]) }}" class="btn btn-outline-success btn-sm">View</a>
-                        <a href="{{ route("posts.edit", ["post" => $post['id']]) }}" class="btn btn-outline-warning btn-sm ms-1">Edit</a>
-                        <a href="" class="btn btn-outline-danger btn-sm ms-1">Delete</a>
-{{--                        <form method="post" action="{{ route("posts.destroy", $post['id']) }}">--}}
-{{--                            @csrf--}}
-{{--                            @method("DELETE")--}}
-{{--                            <button type="submit" class="btn btn-outline-danger btn-sm ms-1">Delete</button>--}}
-{{--                        </form>--}}
+                        <a href="{{ route("posts.show", ["post" =>$post->id ]) }}" class="btn btn-outline-success btn-sm">View</a>
+                        <a href="{{ route("posts.edit", ["post" => $post->id ]) }}" class="btn btn-outline-warning btn-sm ms-1">Edit</a>
+{{--                        <a href="" class="btn btn-outline-danger btn-sm ms-1">Delete</a>--}}
+                        <form method="post" action="{{ route("posts.destroy", $post['id']) }}">
+                            @csrf
+                            @method("DELETE")
+                            <button type="submit" class="btn btn-outline-danger btn-sm ms-1">Delete</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -14,51 +15,62 @@ private  $posts = [
     ];
 
     public function index() {
+//        $posts = Post::where("creator", "Mona")->get();
         $posts = Post::all();
-        dd($posts);
+
+//        dd($posts);
         return view("posts.index", [ "posts" => $posts  ]);
     }
 
     public function show($id){
-        foreach($this->posts as $post){
-            if($post["id"] == $id){
-                return view("posts.show", ["post" => $post]);
-            }
-        }
-
-        abort(404);
+        $post = Post::findorfail($id);
+        return view("posts.show", [ "post" => $post ]);
     }
 
 
     public function create(){
-        return view("posts.create");
+        $users = User::all();
+        return view("posts.create", compact("users"));
     }
 
     public function store(Request $request){
-        $newPost = new Post();
-        $newPost->title = $request->title;
-        $newPost->description = $request->description;
-        $newPost->creator = "Mona Ali";
-        $newPost->created_at = now();
+        // Create new post in database
+//        // dd($request->all());
+
+        /*$post = Post::create([
+            "title" => $request->title,
+            "description" => $request->description,
+            "creator" => $request->creator
+        ]);*/
 
 
+        Post::create($request->except("_token"));
+
+//        dd($post);
         return redirect()->route("posts.index");
     }
 
-    public function edit($id){
-        foreach($this->posts as $post){
-            if($post["id"] == $id){
-                return view("posts.edit", ["post" => $post]);
-            }
-        }
 
-        abort(404);
+    public function edit($id){
+        $post = Post::findorfail($id);
+        $users = User::all();
+        return view("posts.edit", [ "post" => $post, "users" => $users ]);
     }
 
 
     public function update(Request $request, $id)
     {
-        dd($request->all() , $id);
+        $post = Post::findorfail($id);
+        $post->update($request->except("_token", "_method"));
+
+        return redirect()->route("posts.index");
+    }
+
+    public function destroy($id){
+        $post = Post::findorfail($id);
+        $post->delete();
+
+        return redirect()->route("posts.index");
     }
 
 }

@@ -17,14 +17,19 @@
                 <textarea class="form-control" name="description" id="description" rows="5" placeholder="Enter post description"></textarea>
             </div>
             <div class="mb-3">
-                <label for="creator" class="form-label">Creator</label>
-                <input type="text" class="form-control" id="creator" name="creator" placeholder="Enter Creator"/>
+                <label for="user_id" class="form-label">Creator</label>
+                <select class="form-select" name="user_id" id="user_id">
+                    <option value="" selected disabled>Select creator</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endforeach
+                </select>
             </div>
 
-            <div class="mb-3">
+            {{--<div class="mb-3">
                 <label for="created_at" class="form-label">Created At</label>
                 <input type="text" class="form-control" id="created_at" name="created_at" placeholder="Enter created at"/>
-            </div>
+            </div>--}}
             <button type="submit" class="btn btn-primary">Create Post</button>
         </form>
     </div>
