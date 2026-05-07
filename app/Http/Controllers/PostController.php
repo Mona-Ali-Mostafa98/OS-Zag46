@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -12,8 +13,10 @@ private  $posts = [
         ["id" => 3, "title" => "title 3", "description" => "Description 3", "creator" => "Mona Ali", "created_at"=> "2026-05-05" ]
     ];
 
-    public function index(){
-        return view("posts.index", [ "posts" => $this->posts ]);
+    public function index() {
+        $posts = Post::all();
+        dd($posts);
+        return view("posts.index", [ "posts" => $posts  ]);
     }
 
     public function show($id){
@@ -32,12 +35,12 @@ private  $posts = [
     }
 
     public function store(Request $request){
-        $newPost = [
-            "title" => $request["title"],
-            "description" => $request["description"],
-            "creator" => $request["creator"],
-            "created_at" => $request["created_at"]
-        ];
+        $newPost = new Post();
+        $newPost->title = $request->title;
+        $newPost->description = $request->description;
+        $newPost->creator = "Mona Ali";
+        $newPost->created_at = now();
+
 
         return redirect()->route("posts.index");
     }
