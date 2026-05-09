@@ -11,10 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->dropColumn('creator');
-            $table->unsignedBigInteger('user_id')->after('description');  // creator
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
+
+            $table->unsignedBigInteger('user_id');  // creator
             $table->foreign('user_id')->references('id')->on('users');
+
+            $table->unsignedBigInteger('post_id');  // creator
+            $table->foreign('post_id')->references('id')->on('posts');
+
+            $table->text('message');
+
+            $table->timestamps();
         });
     }
 
@@ -23,8 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('comments');
     }
 };

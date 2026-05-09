@@ -13,17 +13,23 @@ private  $posts = [
         ["id" => 2, "title" => "title 2", "description" => "Description 2", "creator" => "Mona Ali", "created_at"=> "2026-05-05" ],
         ["id" => 3, "title" => "title 3", "description" => "Description 3", "creator" => "Mona Ali", "created_at"=> "2026-05-05" ]
     ];
-
+    //Paginator::useBootstrapFive(); Paginator::useTailwind();
     public function index() {
-//        $posts = Post::where("creator", "Mona")->get();
-        $posts = Post::all();
+        /*$posts = Post::where("id", "1")->get();
+        dd($posts);*/
+
+//        $user = User::with("posts")->find(1);
+//        dd($user->posts);
+
+        $posts = Post::with("user")->paginate(15);
 
 //        dd($posts);
         return view("posts.index", [ "posts" => $posts  ]);
     }
 
     public function show($id){
-        $post = Post::findorfail($id);
+        $post = Post::where("id", $id)->with("comments")->firstorfail();
+
         return view("posts.show", [ "post" => $post ]);
     }
 

@@ -15,8 +15,33 @@
                 <a href="{{ route("posts.index") }}" class="btn btn-outline-success btn-sm">Back</a>
                 <a href="" class="btn btn-outline-warning btn-sm ms-1">Edit</a>
                 <a href="" class="btn btn-outline-danger btn-sm ms-1">Delete</a>
+
+
+                <h2 class="mt-3">Comments</h2>
+                @forelse($post->comments as $comment)
+                    <div class="card-body">
+                        <p class="card-text">{{ $comment->message }}</p>
+
+                    </div>
+                @empty
+                    <div class="card-body">
+                        <p class="card-text">No comments yet.</p>
+                    </div>
+
+                @endforelse
+
+
+
+                <form action="{{ route("comments.store", $post->id) }}" method="post">
+                    @csrf
+                    <input type="hidden" name="user_id" value="1"/>
+    {{--                <input type="hidden" name="post_id" value="{{ $post->id }}"/>--}}
+
+                    <textarea name="message" class="form-control"></textarea>
+
+                    <button type="submit" class="btn btn-success">Send Comment</button>
+                </form>
             </div>
         </div>
-
     </div>
 @endsection
