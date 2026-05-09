@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -39,7 +41,7 @@ private  $posts = [
         return view("posts.create", compact("users"));
     }
 
-    public function store(Request $request){
+    public function store(StorePostRequest $request){
         // Create new post in database
 //        // dd($request->all());
 
@@ -50,7 +52,26 @@ private  $posts = [
         ]);*/
 
 
-        Post::create($request->except("_token"));
+        /*$validated = $request->validate([
+            'title' => ['required', "min:5", "max:255", "unique:posts", "string"],
+            'description' => ['required', "min:10"],
+            "user_id" => ['required', "exists:users,id", "integer"]
+        ], [
+            "title.required" => "please enter title, Title is required",
+            "title.min" => "التايتل لازم يكون اكتر من 5 حروف",
+            "description.required" => "please enter description, Description is required",
+            "description.min" => "الوصف لازم يكون اكتر من 10 حروف",
+            "user_id.required" => "please select user, User is required",
+            "user_id.exists" => "please select valid user, User must exist in users table"
+        ]);*/
+
+        $validated = $request->validated();
+
+//      $errors - @error("title")
+//      dd($validated);
+
+//        Post::create($request->except("_token"));
+        Post::create($validated);
 
 //        dd($post);
         return redirect()->route("posts.index");
@@ -64,7 +85,7 @@ private  $posts = [
     }
 
 
-    public function update(Request $request, $id)
+    public function update(UpdatePostRequest $request, $id)
     {
         $post = Post::findorfail($id);
         $post->update($request->except("_token", "_method"));

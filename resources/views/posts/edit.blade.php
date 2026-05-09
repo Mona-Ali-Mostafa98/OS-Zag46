@@ -4,6 +4,15 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Edit Post {{ $post['title'] }}</h1>
     </div>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="row">
         <!-- Add form for create post -->
         <form method="post" action="{{ route("posts.update", $post['id']) }}">
