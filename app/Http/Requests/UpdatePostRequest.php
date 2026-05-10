@@ -28,6 +28,7 @@ class UpdatePostRequest extends FormRequest
             'description' => ['required', "min:10"],
             "user_id" => ['required', "exists:users,id", "integer"],
 //            "title" => "required|min:5|max:255|unique:posts,title," . $this->post->id . "|string"
+        "image" => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
         ];
     }
 }

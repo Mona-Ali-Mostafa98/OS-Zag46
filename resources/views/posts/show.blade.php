@@ -10,12 +10,16 @@
             <div class="card-body">
                 <h5 class="card-title">{{ $post['title'] }}</h5>
                 <p class="card-text">{{ $post['description'] }}</p>
-                <p class="card-text"><small class="text-muted">Posted by: {{ $post['creator'] }}</small></p>
+                <p class="card-text"><small class="text-muted">Posted by: {{ $post['user']['name'] }}</small></p>
                 <p class="card-text">{{ $post['created_at'] }}</p>
                 <a href="{{ route("posts.index") }}" class="btn btn-outline-success btn-sm">Back</a>
-                <a href="" class="btn btn-outline-warning btn-sm ms-1">Edit</a>
-                <a href="" class="btn btn-outline-danger btn-sm ms-1">Delete</a>
-
+                <a href="{{ route("posts.edit", $post->id) }}" class="btn btn-outline-warning btn-sm ms-1">Edit</a>
+                <a href="{{ route("posts.destroy", $post->id) }}" class="btn btn-outline-danger btn-sm ms-1" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this post?')) { document.getElementById('delete-form').submit(); }">Delete</a>
+                <p>Image : <img src="{{ asset("storage/" . $post->image) }}" alt="" srcset="" width="200" height="200"></p>
+                <form id="delete-form" action="{{ route("posts.destroy", $post->id) }}" method="POST" style="display: none;">
+                    @csrf
+                    @method('DELETE')
+                </form>
 
                 <h2 class="mt-3">Comments</h2>
                 @forelse($post->comments as $comment)

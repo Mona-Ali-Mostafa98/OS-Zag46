@@ -17,7 +17,7 @@
 
     <div class="row">
         <!-- Add form for create post -->
-        <form method="post" action="{{ route("posts.store") }}">
+        <form method="post" action="{{ route("posts.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
@@ -45,6 +45,16 @@
                 <div class="mt-2 text-danger">{{ $message }}</div>
                 @enderror
             </div>
+
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" name="image" id="image" placeholder="Enter post image""/>
+                @error('image')
+                <div class="mt-2 text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
 
             {{--<div class="mb-3">
                 <label for="created_at" class="form-label">Created At</label>

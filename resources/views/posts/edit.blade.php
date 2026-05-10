@@ -15,7 +15,7 @@
     @endif
     <div class="row">
         <!-- Add form for create post -->
-        <form method="post" action="{{ route("posts.update", $post['id']) }}">
+        <form method="post" action="{{ route("posts.update", $post['id']) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="mb-3">
@@ -36,6 +36,15 @@
                     @endforeach
                 </select>
             </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" name="image" id="image" placeholder="Enter post image""/>
+                @error('image')
+                <div class="mt-2 text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <img src="{{ url("storage/" . $post->image) }}" alt="" srcset=""> <br>
 
             <button type="submit" class="btn btn-primary">Create Post</button>
         </form>

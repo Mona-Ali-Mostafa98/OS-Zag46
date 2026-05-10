@@ -5,6 +5,16 @@
         <h1>Post List</h1>
     </div>
     <div class="row">
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <table class="table table-striped table-hover table-bordered">
             <thead>
             <tr>

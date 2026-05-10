@@ -6,10 +6,13 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\User;
+use App\Traits\UploadImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    use UploadImageTrait;
 private  $posts = [
         ["id" => 1, "title" => "title 1", "description" => "Description 1", "creator" => "Mona Ali", "created_at"=> "2026-05-05" ],
         ["id" => 2, "title" => "title 2", "description" => "Description 2", "creator" => "Mona Ali", "created_at"=> "2026-05-05" ],
@@ -48,7 +51,8 @@ private  $posts = [
         /*$post = Post::create([
             "title" => $request->title,
             "description" => $request->description,
-            "creator" => $request->creator
+            "creator" => $request->creator,
+            "image" = $imagepath
         ]);*/
 
 
@@ -71,10 +75,21 @@ private  $posts = [
 //      dd($validated);
 
 //        Post::create($request->except("_token"));
+
+        if ($request->hasFile('image')) {
+//            $imagePath = $request->file('image')->store('posts', 'public');
+            $imagePath = $this->uploadImage($request, 'posts', 'image');
+
+        }
+
+        $validated["image"] = $imagePath;
+
         Post::create($validated);
 
 //        dd($post);
-        return redirect()->route("posts.index");
+        return redirect()->route("posts.index")->with('success', 'Post created successfully');
+//            ->with('info', 'Extra info');
+        // ->withSuccess('Saved successfully'); Flash Messages
     }
 
 
@@ -87,17 +102,35 @@ private  $posts = [
 
     public function update(UpdatePostRequest $request, $id)
     {
-        $post = Post::findorfail($id);
-        $post->update($request->except("_token", "_method"));
+        $validated = $request->validated();
 
-        return redirect()->route("posts.index");
+        $post = Post::findorfail($id);
+        $oldimage = $post->image;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('posts', 'public');
+
+            if($oldimage){
+                Storage::disk("public")->delete($oldimage);
+            }
+            $validated["image"] = $imagePath;
+        }
+
+        $post->update($validated);
+
+        return redirect()->route("posts.index")->with('success', 'Post updated successfully');
     }
 
     public function destroy($id){
         $post = Post::findorfail($id);
+
+        if($post->image){
+            Storage::disk("public")->delete($post->image);
+        }
+
         $post->delete();
 
-        return redirect()->route("posts.index");
+        return redirect()->route("posts.index")->with('error', 'Post deleted successfully');
     }
 
 }
