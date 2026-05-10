@@ -1,59 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Task: Form with Validation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+Build a form for creating and updating tasks using Laravel. Apply validation using **Form Request** classes for both Store and Update operations.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Documentation References
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* https://laravel.com/docs/master/validation#creating-form-requests
+* https://laravel.com/docs/master/validation#quick-displaying-the-validation-errors
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 1. Title
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* Required
+* Minimum length: 3 characters
+* Must be unique
 
-## Laravel Sponsors
+### 2. Description
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* Required
+* Minimum length: 10 characters
 
-### Premium Partners
+### 3. Due Date
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+* Required
+* Must be a valid date
 
-## Contributing
+### 4. Priority
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Required
+* Allowed values:
 
-## Code of Conduct
+    * low
+    * medium
+    * high
+    * urgent
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 5. Status
 
-## Security Vulnerabilities
+* Required
+* Allowed values:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    * to-do
+    * in_progress
+    * done
 
-## License
+### 6. Creator and Assignee IDs
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* Required
+* Must exist in the database (foreign key validation, e.g., `exists:users,id`)
+* Add input fields for both **creator_id** and **assignee_id** in the form
+
+---
+
+## Additional Conditions
+
+### Update Handling
+
+* Validation must pass if the **title is not changed**
+* Ignore the current task ID in the unique rule
+
+### Security
+
+* Ensure the submitted **creator_id exists in the database**
+* Ensure the submitted **assignee_id exists in the database**
+* Prevent sending invalid or non-existing IDs
+
+### Error Handling
+
+* Display validation error messages clearly in the view
+* Customize default error messages to be more descriptive and user-friendly
+
+---
+
+## Relationships & Features
+
+### Polymorphic Comments
+
+Add comments using a **polymorphic relationship**.
+
+* Reference: https://laravel.com/docs/master/eloquent-relationships#polymorphic-relationships
+* Do NOT use a one-to-many relationship
+* Reason: to reuse the same comments table for other models (e.g., tasks, posts, images)
+
+---
+
+### Comments
+
+* A task can have multiple comments
+* A comment belongs to a user
+* A comment belongs to a commentable model (task via polymorphic relation)
+
+---
+
+### User Relations
+
+* A task belongs to a user (creator)
+* A task can be assigned to a user (assignee)
+* A user can have many tasks
+* A user can have many comments
+
+---
+
+### Task Relations
+
+* A task can have many comments
+* A task belongs to a creator (user)
+* A task belongs to an assignee (user)
+
+---
+
+### Requirements for Comments
+
+* Comment body is required
+* Each comment must be linked to:
+
+    * an existing user (`exists:users,id`)
+    * a valid commentable model
+
+---
+
+### Additional Features
+
+* Use **Eager Loading** to optimize queries and avoid the N+1 problem
+
+    * Example:
+
+        * `Task::with(['creator', 'assignee', 'comments.user'])->get()`
+
+* Display the commenter's information with each comment
+
+---

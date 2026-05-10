@@ -3,6 +3,7 @@
 @section("content")
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Post List</h1>
+        <a href="{{ route("posts.create") }}" class="btn btn-success">Create Post</a>
     </div>
     <div class="row">
         {{ \Illuminate\Support\Facades\Auth::user()?->name }}
