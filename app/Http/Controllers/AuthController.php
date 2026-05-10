@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -34,5 +35,31 @@ class AuthController extends Controller
         auth()->login($user); // Create session at SESSION_DRIVER=database
 
         return redirect("/posts")->with("success", "You are now logged in");
+    }
+
+    public function showLoginForm(){
+        return view('login');
+    }
+
+    public function login(Request $request){
+        $data = $request->only('email', 'password');
+
+        if(Auth::attempt($data)){
+            $request->session()->regenerate();
+            return redirect("/posts")->with("success", "You are now logged in");
+        }
+
+        return redirect("/login")->with("error", "Email or password is incorrect");
+    }
+
+
+    public function logout(Request $request){
+        Auth::logout(); // set user_id null
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect("/login")->with("success", "You are now logged out");
+//        return redirect()->route("users.logout")->with("success", "You are now logged out");
+
+
     }
 }
