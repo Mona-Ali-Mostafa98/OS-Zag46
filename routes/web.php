@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,3 +33,9 @@ Route::delete("/posts/{post}", [PostController::class, "destroy"] )->name("posts
 
 
 Route::post("posts/{post}/comments", [CommentController::class, "store"])->name("comments.store");
+
+
+Route::resource("users", UserController::class);
+
+Route::get("/register", [AuthController::class, "showRegisterForm"])->name("users.showRegisterForm");
+Route::post("/register", [AuthController::class, "register"])->name("users.register");
