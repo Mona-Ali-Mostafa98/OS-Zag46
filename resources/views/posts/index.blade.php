@@ -5,6 +5,15 @@
         <h1>Post List</h1>
     </div>
     <div class="row">
+        {{ \Illuminate\Support\Facades\Auth::user()?->name }}
+        {{ auth()->user()?->name }}
+        {{ auth()->id() }}
+
+        <form action="{{ route("logout") }}" method="post">
+            @csrf
+            <button type="submit" class="btn btn-link">Logout</button>
+        </form>
+
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -34,13 +43,17 @@
                     <td>{{ $post->created_at }}</td>
                     <td>
                         <a href="{{ route("posts.show", ["post" =>$post->id ]) }}" class="btn btn-outline-success btn-sm">View</a>
+                        @auth
                         <a href="{{ route("posts.edit", ["post" => $post->id ]) }}" class="btn btn-outline-warning btn-sm ms-1">Edit</a>
+                        @endauth
+                        @if(auth()->user())
 {{--                        <a href="" class="btn btn-outline-danger btn-sm ms-1">Delete</a>--}}
                         <form method="post" action="{{ route("posts.destroy", $post['id']) }}" class="d-inline">
                             @csrf
                             @method("DELETE")
                             <button type="submit" class="btn btn-outline-danger btn-sm ms-1">Delete</button>
                         </form>
+                        @endif
                     </td>
                 </tr>
             @endforeach
