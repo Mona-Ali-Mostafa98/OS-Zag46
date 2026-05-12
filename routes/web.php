@@ -5,6 +5,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\AuthController;
+use Laravel\Socialite\Socialite;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,14 +24,16 @@ Route::get("/test" , function(){
 //Route::get("/test2" , [PostController::class, "test2"]);
 
 
-Route::get("/posts", [PostController::class, "index"])->name("posts.index");
-Route::get("/posts/create", [PostController::class, "create"])->name("posts.create")->middleware("auth"); // get form of create new post
-Route::post("/posts", [PostController::class, "store"])->name("posts.store")->middleware("auth");
-Route::get("/posts/{post}", [PostController::class, "show"] )->name("posts.show");
-Route::get("posts/{post}/edit", [PostController::class, "edit"])->name("posts.edit")->middleware("auth");
-Route::put("posts/{post}", [PostController::class, "update"])->name("posts.update")->middleware("auth");
-Route::delete("/posts/{post}", [PostController::class, "destroy"] )->name("posts.destroy")->middleware("auth");
 
+//Route::get("/posts", [PostController::class, "index"])->name("posts.index");
+//Route::get("/posts/create", [PostController::class, "create"])->name("posts.create")->middleware("auth"); // get form of create new post
+//Route::post("/posts", [PostController::class, "store"])->name("posts.store")->middleware("auth");
+//Route::get("/posts/{post}", [PostController::class, "show"] )->name("posts.show");
+//Route::get("posts/{post}/edit", [PostController::class, "edit"])->name("posts.edit")->middleware("auth");
+//Route::put("posts/{post}", [PostController::class, "update"])->name("posts.update")->middleware("auth");
+//Route::delete("/posts/{post}", [PostController::class, "destroy"] )->name("posts.destroy")->middleware("auth");
+
+Route::resource("posts", PostController::class)->middleware("auth");
 
 Route::post("posts/{post}/comments", [CommentController::class, "store"])->name("comments.store");
 
@@ -48,3 +51,15 @@ Route::post("logout", [AuthController::class, "logout"])->name("logout");
 \Illuminate\Support\Facades\Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/auth/redirect', function () {
+    return Socialite::driver('github')->redirect();
+});
+
+Route::get('/auth/callback', function () {
+    $user = Socialite::driver('github')->user();
+    // create data
+
+     dd($user);
+
+});

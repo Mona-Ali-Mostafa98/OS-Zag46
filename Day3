@@ -1,0 +1,74 @@
+-- api is way to contact between two server -> client like mobile app and server like laravel app
+-- each table as a resource
+-- https://www.youtube.com/watch?v=s7wmiS2mSXY
+-- use routes Rest (Representational State Transfer)
+It’s an architectural style for providing standards between computer systems on the web
+GET    /posts
+POST   /posts
+GET    /posts/1
+PUT    /posts/1
+DELETE /posts/1
+
+php artisan install:api
+-> Create routes/api.php, middleware , stateless(no session , no cookie and use token "token-based" so use sanctum)
+
+----------------> apiResource
+
+----------------> Dealing with posts
+It’s a transformation layer that sits between Eloquent Model & Json Response
+php artisan make:controller Api/PostController --api
+php artisan make:resource PostResource
+
+----------------> Laravel Sanctum-Laravel
+Sanctum provides a featherweight authentication system for SPAs (single page applications),
+    mobile applications, and simple, token based APIs
+-Mobile API doesn’t maintain session state between requests
+
+----------------> Auth login , register
+$token = $user->createToken('api-token')->plainTextToken;
+$user->createToken($request->device_name)->plainTextToken;
+
+----------------> logout
+$request->user()->tokens()->delete();
+return response()->json(['message' => 'Logged out']);
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::apiResource('posts', PostController::class);
+});
+
+--------------> PostResource
+public function toArray($request)
+    {
+        return [
+            'id' => $this->id,
+            'image' => $this->image ? asset('storage/' . $this->image) : null,
+            'user' => $this->user->name,
+            'created_at' => $this->created_at->diffForHumans(),
+        ];
+    }
+
+--------------> index
+return PostResource::collection(
+    Post::with('user')->latest()->paginate(10)
+);
+
+single
+return new PostResource($post);
+new PostResource($post->load('user'))
+
+-- >socialiate
+
+
+
+
+
+
+
+
+
+
+

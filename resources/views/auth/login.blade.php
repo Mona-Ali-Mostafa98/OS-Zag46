@@ -62,6 +62,8 @@
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif
+
+                                <a href="/auth/redirect">Login with githab</a>
                             </div>
                         </div>
                     </form>
